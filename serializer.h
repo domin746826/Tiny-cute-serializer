@@ -13,13 +13,12 @@
 #define BUFFER_LENGTH 255 //max packet size, consider decreasing it on small devices like ATTiny
 #define MAX_REGISTERED_PACKETS 16
 
-#define PACKET_RECEIVER 1
-#define PACKET_GYRO 2
-
 struct eventsInfo
 {
   uint8_t type;
   uint8_t length;
+  void* attachedStruct;
+  void (*onReceive)(uint8_t);
 };
 
 class Serializer
@@ -28,11 +27,16 @@ class Serializer
     eventsInfo *events[MAX_REGISTERED_PACKETS];
     uint8_t receivingBuffer[BUFFER_LENGTH];
     uint8_t sendingBuffer[BUFFER_LENGTH];
+    uint8_t currentEventsIndex = 0;
 
   public:
     Serializer();
-    sendData();
+    void sendData(uint8_t structType);
+    uint8_t parsePacket(); //
+    void parseNonblocking(); //put at the end of main program loop and it will call right function
 
+    void setFunctionToEvent(uint8_t structType, void (*onReceive)(uint8_t));
+    void setupEvent(uint8_t structType, void* structToSet, uint8_t structLength); 
 };
 
 #endif
