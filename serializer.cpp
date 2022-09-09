@@ -1,6 +1,31 @@
 #include "serializer.h"
 
-struct receiver //these structs are from my drone code and I am turning this into library
+
+Serializer::Serializer()
+{
+}
+
+void Serializer::sendData(uint8_t structType)
+{
+}
+
+uint8_t Serializer::parsePacket()
+{
+}
+
+void Serializer::parseNonblocking()
+{
+}
+
+void setupEvent(uint8_t structType, void* structToSet, uint8_t structLength)
+{
+}
+
+void setFunctionToEvent(uint8_t structType, void (*onReceive)(uint8_t))
+{
+}
+
+/*struct receiver //these structs are from my drone code and I am turning this into library
 {
   uint8_t power;
   int8_t rotate ;
@@ -25,9 +50,9 @@ uint8_t buffer[64] = {0};
 uint8_t bufferPosition = 0;
 void parsePacket()
 {
-  /*if(!Serial.available())
+  if(!Serial.available())
     return;
-  char c = Serial.read();*/
+  char c = Serial.read();
   char c;
 
   switch(packetType)
@@ -51,4 +76,4 @@ void parsePacket()
   }
 }
 
-
+*/

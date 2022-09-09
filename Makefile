@@ -2,4 +2,4 @@ all: build
 	./main
 
 build:
-	g++ -o main main.cpp
+	g++ -o main *.cpp
