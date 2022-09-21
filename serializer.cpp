@@ -1,4 +1,6 @@
 #include "serializer.h"
+#include <iostream>
+using namespace std;
 
 
 Serializer::Serializer()
@@ -7,21 +9,42 @@ Serializer::Serializer()
 
 void Serializer::sendData(uint8_t structType)
 {
+  for(int i = 0; i < currentEventsIndex; i++)
+  {
+    if(events[i]->type == structType)
+    {
+      memcpy(sendingBuffer, events[i]->attachedStruct, events[i]->length);
+      
+      for(int i2 = 0; i2 < events[i]->length; i2++) //TODO send data instead of displaying
+        cout << "char nr " << i2 << ": "<< sendingBuffer[i2] << "\t " << std::hex << (int) sendingBuffer[i2] << endl;
+      return;
+    }
+  }
+  return;
 }
 
 uint8_t Serializer::parsePacket()
 {
+  return 0;
 }
 
 void Serializer::parseNonblocking()
 {
 }
 
-void setupEvent(uint8_t structType, void* structToSet, uint8_t structLength)
+void Serializer::setupEvent(uint8_t structType, void* structToSet, uint8_t structLength)
 {
+  if(currentEventsIndex >= 16)
+    return;
+
+  events[currentEventsIndex] = new eventsInfo;
+  events[currentEventsIndex]->type = structType;
+  events[currentEventsIndex]->length = structLength;
+  events[currentEventsIndex]->attachedStruct = structToSet;  
+  currentEventsIndex++;
 }
 
-void setFunctionToEvent(uint8_t structType, void (*onReceive)(uint8_t))
+void Serializer::setFunctionToEvent(uint8_t structType, void (*onReceive)(uint8_t))
 {
 }
 
