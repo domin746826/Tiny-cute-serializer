@@ -1,7 +1,10 @@
 /*
  * TODO make changing send/receive functions possible, make everything non-blocking
  *
- *
+ * the format is: 
+ * byte 0 - packet ID
+ * byte 1 - packet length (because some packets can have variable size)
+ * ...
  */
 
 #ifndef _SERIALIZER_H
@@ -28,6 +31,8 @@ class Serializer
     uint8_t receivingBuffer[BUFFER_LENGTH];
     uint8_t sendingBuffer[BUFFER_LENGTH];
     uint8_t currentEventsIndex = 0;
+    void sendChar(char c);
+
 
   public:
     Serializer();

@@ -5,6 +5,7 @@
 #define MYSTRUCT_ID 2
 using namespace std;
 
+#pragma pack(push, 1)
 struct testStruct
 {
   char someString[16];
@@ -13,6 +14,7 @@ struct testStruct
   uint32_t number;
   float floatNumber; 
 };
+#pragma pack(pop)
 
 int main()
 {

@@ -14,9 +14,10 @@ void Serializer::sendData(uint8_t structType)
     if(events[i]->type == structType)
     {
       memcpy(sendingBuffer, events[i]->attachedStruct, events[i]->length);
-      
+      sendChar(structType);
+      sendChar(events[i]->length);
       for(int i2 = 0; i2 < events[i]->length; i2++) //TODO send data instead of displaying
-        cout << "char nr " << i2 << ": "<< sendingBuffer[i2] << "\t " << std::hex << (int) sendingBuffer[i2] << endl;
+        sendChar(sendingBuffer[i2]);
       return;
     }
   }
@@ -26,6 +27,11 @@ void Serializer::sendData(uint8_t structType)
 uint8_t Serializer::parsePacket()
 {
   return 0;
+}
+
+void Serializer::sendChar(char c)
+{
+  cout << "char: " << ((c >= 32 && c <= 127) ? c : ' ') << "\t/\t" <<  std::hex << (unsigned short) (c&0x00ff) << endl;
 }
 
 void Serializer::parseNonblocking()
