@@ -16,7 +16,7 @@ void Serializer::sendData(uint8_t structType)
       memcpy(sendingBuffer, events[i]->attachedStruct, events[i]->length);
       sendChar(structType);
       sendChar(events[i]->length);
-      for(int i2 = 0; i2 < events[i]->length; i2++) //TODO send data instead of displaying
+      for(int i2 = 0; i2 < events[i]->length; i2++)
         sendChar(sendingBuffer[i2]);
       return;
     }
@@ -29,9 +29,9 @@ uint8_t Serializer::parsePacket()
   return 0;
 }
 
-void Serializer::sendChar(char c)
+void Serializer::setSendCharFunction(void (*func)(char))
 {
-  cout << "char: " << ((c >= 32 && c <= 127) ? c : ' ') << "\t/\t" <<  std::hex << (unsigned short) (c&0x00ff) << endl;
+  sendChar = func;
 }
 
 void Serializer::parseNonblocking()
@@ -50,7 +50,7 @@ void Serializer::setupEvent(uint8_t structType, void* structToSet, uint8_t struc
   currentEventsIndex++;
 }
 
-void Serializer::setFunctionToEvent(uint8_t structType, void (*onReceive)(uint8_t))
+void Serializer::setOnReceiveFunction(void (*onReceive)(uint8_t))
 {
 }
 
