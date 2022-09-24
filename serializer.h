@@ -2,6 +2,8 @@
  * TODO make everything non-blocking, add support for variable length functions
  *
  * up to 254 different packets possible (maybe in the future when I add Varint, bigger number of packets could be possible)
+ * packet ID 0 is "bad packet" and is returned when something went wrong
+ *
  *
  * the format is: 
  * byte 0 - packet ID
@@ -18,7 +20,7 @@
 #define BUFFER_LENGTH 255 //max packet size, consider decreasing it on small devices like ATTiny
 #define MAX_REGISTERED_PACKETS 16
 
-struct eventsInfo
+struct eventInfo
 {
   uint8_t type;
   uint8_t length;
@@ -28,22 +30,28 @@ struct eventsInfo
 class Serializer
 {
   private:
-    eventsInfo *events[MAX_REGISTERED_PACKETS];
+    eventInfo *badEvent;
+    eventInfo *events[MAX_REGISTERED_PACKETS];
     uint8_t receivingBuffer[BUFFER_LENGTH];
     uint8_t sendingBuffer[BUFFER_LENGTH];
     uint8_t currentEventsIndex = 0;
     void (*onReceive)(uint8_t);
+    
     void (*sendChar)(char c);
+    char (*receiveChar)(void);
+    bool (*isDataAvailable)(void);
 
 
   public:
     Serializer();
-    void sendData(uint8_t structType);
-    uint8_t parsePacket(); //
+    void sendPacket(uint8_t structType);
+    uint8_t parsePacket(); 
     void parseNonblocking(); //put at the end of main program loop and it will call right function
 
     void setOnReceiveFunction(void (*func)(uint8_t));
     void setSendCharFunction(void (*func)(char));
+    void setReceiveCharFunction(char (*func)(void));
+    void setIsDataAvailableFunction(bool (*func)(void));
 
 
     void setupEvent(uint8_t structType, void* structToSet, uint8_t structLength); 
