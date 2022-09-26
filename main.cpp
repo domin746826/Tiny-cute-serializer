@@ -26,11 +26,11 @@ int main()
   Serializer serializer;
 
   testStruct myStruct;
-  //myStruct.floatNumber = 2.3;
-  //myStruct.number = 0xDEADBEEF;
-  //myStruct.character = '~';
-  //myStruct.character2 = '\\';
-  //strcpy(myStruct.someString, "cutestring");
+  myStruct.floatNumber = 2.3;
+  myStruct.number = 0xDEADBEEF;
+  myStruct.character = '~';
+  myStruct.character2 = '\\';
+  strcpy(myStruct.someString, "cutestring");
 
   serializer.setupEvent(MYSTRUCT_ID, &myStruct, sizeof(testStruct));
   serializer.setOnReceiveFunction(onReceive);
@@ -38,11 +38,11 @@ int main()
   serializer.setReceiveCharFunction(receiveChar);
   serializer.setIsDataAvailableFunction(isDataAvailable);
 
-  //serializer.sendPacket(MYSTRUCT_ID);
-  serializer.parsePacket();
+   serializer.sendPacket(MYSTRUCT_ID);
+  // serializer.parsePacket();
 
-  cout << myStruct.someString << endl;
-  cout << myStruct.floatNumber << endl;
+  // cout << myStruct.someString << endl;
+  // cout << myStruct.floatNumber << endl;
 
   //cout << receiveChar() << endl;
 

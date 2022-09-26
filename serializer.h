@@ -46,7 +46,6 @@ class Serializer
     Serializer();
     void sendPacket(uint8_t structType);
     uint8_t parsePacket(); 
-    void parseNonblocking(); //put at the end of main program loop and it will call right function
 
     void setOnReceiveFunction(void (*func)(uint8_t));
     void setSendCharFunction(void (*func)(char));

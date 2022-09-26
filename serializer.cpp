@@ -56,12 +56,8 @@ uint8_t Serializer::parsePacket() //blocking way
   return 0;
 }
 
-void Serializer::setSendCharFunction(void (*func)(char))
-{
-  sendChar = func;
-}
-
-void Serializer::parseNonblocking()
+//put at the end of main and it will call function specified by setIsDataAvailableFunction when something was received
+void Serializer::processEvents()
 {
 }
 
@@ -92,6 +88,11 @@ void Serializer::setReceiveCharFunction(char (*func)(void))
 void Serializer::setIsDataAvailableFunction(bool (*func)(void))
 {
   isDataAvailable = func;
+}
+
+void Serializer::setSendCharFunction(void (*func)(char))
+{
+  sendChar = func;
 }
 
 /*struct receiver //these structs are from my drone code and I am turning this into library
