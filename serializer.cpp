@@ -1,6 +1,4 @@
 #include "serializer.h"
-#include <iostream>
-using namespace std;
 
 
 Serializer::Serializer()
@@ -59,6 +57,43 @@ uint8_t Serializer::parsePacket() //blocking way
 //put at the end of main and it will call function specified by setIsDataAvailableFunction when something was received
 void Serializer::processEvents()
 {
+  while(isDataAvailable())
+  {
+    if(!isReceivingPacket) //TODO check if ID equals 0 and dump packet in that case
+    {
+      if(currentlyReceivedPacketId == 0)
+        currentlyReceivedPacketId = receiveChar(); 
+      else 
+      {
+        //setup for receiving
+        receivedPacketSize = receiveChar();
+        isReceivingPacket = true;
+        
+      }
+    }
+    else
+    {
+      receivingBuffer[receivedPacketPos++] = receiveChar();
+      
+      if(receivedPacketPos == receivedPacketSize)
+      {
+        for(uint8_t i = 0; i < currentEventsIndex; i++)        
+          if(events[i]->type == currentlyReceivedPacketId)
+          {
+            if(receivedPacketPos > events[i]->length)
+              receivedPacketPos = events[i]->length;
+            memcpy(events[i]->attachedStruct, receivingBuffer, receivedPacketPos); //write received data to struct
+            receivedPacketPos = 0;
+            receivedPacketSize = 0;
+            currentlyReceivedPacketId = 0;
+            isReceivingPacket = false;
+            onReceive(events[i]->type);
+            return;
+          }
+
+      }
+    }
+  }
 }
 
 void Serializer::setupEvent(uint8_t structType, void* structToSet, uint8_t structLength)
@@ -95,55 +130,3 @@ void Serializer::setSendCharFunction(void (*func)(char))
   sendChar = func;
 }
 
-/*struct receiver //these structs are from my drone code and I am turning this into library
-{
-  uint8_t power;
-  int8_t rotate ;
-  int8_t fb; //forward backward
-  int8_t lr; //left right
-  float alignment;
-  float alignment2;
-};
-
-struct gyro
-{
-  float x = 0;
-  float y = 0;
-  float z = 0;
-};
-
-receiver received;
-
-
-uint8_t packetType = 0;
-uint8_t buffer[64] = {0};
-uint8_t bufferPosition = 0;
-void parsePacket()
-{
-  if(!Serial.available())
-    return;
-  char c = Serial.read();
-  char c;
-
-  switch(packetType)
-  {
-    case 0:
-      packetType = c;
-      break;    
-      
-    case PACKET_RECEIVER:
-    {
-      if(bufferPosition != sizeof(received))
-        buffer[bufferPosition++] = c;
-      else
-      {
-        memcpy(&received, &buffer, bufferPosition);
-        bufferPosition = 0;
-        packetType = 0;
-      }        
-    }
-    break;          
-  }
-}
-
-*/

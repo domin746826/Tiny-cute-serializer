@@ -1,3 +1,24 @@
+/*
+ * Tiny cute serializer - example
+ * to test Serializer::processEvents with testStruct, copy and paste
+ * data below in program (terminal) and press enter
+02
+0d
+63
+75
+74
+65
+73
+74
+72
+00
+7e
+ef
+be
+ad
+de
+   */
+
 #include <iostream>
 #include <stdint.h>
 #include "serializer.h"
@@ -8,11 +29,9 @@ using namespace std;
 #pragma pack(push, 1)
 struct testStruct
 {
-  char someString[16];
+  char someString[8];
   char character;
-  char character2;
   uint32_t number;
-  float floatNumber; 
 };
 #pragma pack(pop)
 
@@ -20,17 +39,16 @@ void onReceive(uint8_t type);
 void sendChar(char c);
 char receiveChar(void);
 bool isDataAvailable(void);
+bool dataAvailable_debug = false;
 
+testStruct myStruct;
 int main()
 {
   Serializer serializer;
 
-  testStruct myStruct;
-  myStruct.floatNumber = 2.3;
-  myStruct.number = 0xDEADBEEF;
+  /*myStruct.number = 0xDEADBEEF;
   myStruct.character = '~';
-  myStruct.character2 = '\\';
-  strcpy(myStruct.someString, "cutestring");
+  strcpy(myStruct.someString, "cutestr");*/
 
   serializer.setupEvent(MYSTRUCT_ID, &myStruct, sizeof(testStruct));
   serializer.setOnReceiveFunction(onReceive);
@@ -38,13 +56,24 @@ int main()
   serializer.setReceiveCharFunction(receiveChar);
   serializer.setIsDataAvailableFunction(isDataAvailable);
 
-   serializer.sendPacket(MYSTRUCT_ID);
-  // serializer.parsePacket();
+  //serializer.sendPacket(MYSTRUCT_ID);
 
-  // cout << myStruct.someString << endl;
-  // cout << myStruct.floatNumber << endl;
+  /*serializer.parsePacket();
+
+  cout << endl << "DATA: " << endl;
+  cout << "myStruct.someString: " << myStruct.someString << endl;
+  cout << "myStruct.number: " << hex << myStruct.number << endl;
+  cout << "myStruct.character: " << myStruct.character << endl;*/
 
   //cout << receiveChar() << endl;
+  
+
+  while(1) //for testing only
+  {
+    dataAvailable_debug = true;
+    serializer.processEvents();
+    cout << "loopIteration" << endl;
+  }
 
   return 0;
 }
@@ -56,7 +85,12 @@ void sendChar(char c)
 
 void onReceive(uint8_t type)
 {
-  cout << "received: " << type << endl;
+  cout << "received: " << hex << type << endl;
+  cout << endl << "DATA: " << endl;
+  cout << "myStruct.someString: " << myStruct.someString << endl;
+  cout << "myStruct.number: " << hex << myStruct.number << endl;
+  cout << "myStruct.character: " << myStruct.character << endl;
+  cout << "loopIteration" << endl;
   return;
 }
 
@@ -84,5 +118,12 @@ char receiveChar(void)
 
 bool isDataAvailable(void)
 {
-  return true;
+  if(dataAvailable_debug)
+  {
+    dataAvailable_debug = false;
+    return true;
+  }
+  else
+    return false;
+  //return true;
 }

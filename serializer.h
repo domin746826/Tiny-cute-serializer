@@ -41,6 +41,10 @@ class Serializer
     char (*receiveChar)(void);
     bool (*isDataAvailable)(void);
 
+    bool isReceivingPacket = false;
+    uint8_t currentlyReceivedPacketId = 0;
+    uint8_t receivedPacketSize = 0;
+    uint8_t receivedPacketPos = 0;
 
   public:
     Serializer();
