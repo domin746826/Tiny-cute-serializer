@@ -15,10 +15,9 @@
 #define _SERIALIZER_H
 #include <cstring>
 #include <stdint.h>
-#include <stdio.h>
 
-#define BUFFER_LENGTH 255 //max packet size, consider decreasing it on small devices like ATTiny
-#define MAX_REGISTERED_PACKETS 16
+#define BUFFER_LENGTH 64 //max packet size, consider decreasing it on small devices like ATTiny
+#define MAX_REGISTERED_PACKETS 16 //used space on Arduino, AVR is 4 bytes per one registered packet
 
 struct eventInfo
 {
@@ -36,6 +35,9 @@ class Serializer
     uint8_t sendingBuffer[BUFFER_LENGTH];
     uint8_t currentEventsIndex = 0;
     void (*onReceive)(uint8_t);
+
+    char sendTrigger;
+    char receiveTrigger;
     
     void (*sendChar)(char c);
     char (*receiveChar)(void);
@@ -45,6 +47,14 @@ class Serializer
     uint8_t currentlyReceivedPacketId = 0;
     uint8_t receivedPacketSize = 0;
     uint8_t receivedPacketPos = 0;
+
+    char lastReceivedChar = 0;
+    bool receivingHigher = true;
+
+
+    uint8_t hexToNum(char c);
+    char numToHexHigher(uint8_t num);
+    char numToHexLower(uint8_t num);
 
   public:
     Serializer();
@@ -60,6 +70,8 @@ class Serializer
     void setupEvent(uint8_t structType, void* structToSet, uint8_t structLength); 
 
     void processEvents(); //for non-blocking sending and receiving
+                          
+    void setTriggerChars(char sendChar, char receiveChar);
 };
 
 #endif

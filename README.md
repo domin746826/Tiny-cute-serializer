@@ -1,5 +1,4 @@
 # Tiny-cute-serializer 
-# WIP do not use until all features are added
 Simple and reliable data serializer dedicated for 8 bit microcontrollers to use with UART/SPI etc.
 
 
@@ -39,8 +38,9 @@ I'm using ``:`` as start of packet and data is sent in hexadecimal format but by
 It's important to put these ``#pragma``s because it forces struct to generate same results on diifferent hardware which is important when using my library to communicate PC and embdedded stuff.
 
 ### TODO 
-- [ ] move ASCII style packet functions to core of the library
+- [ ] move ASCII style packet functions to core of the library (almost done except parsePacket)
 - [ ] add examples
 - [ ] add headers and modify makefile to generate library file
 - [ ] check for bugs
+- [ ] optimize for memory usage
 
