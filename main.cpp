@@ -41,6 +41,7 @@ e
 #include <iostream>
 #include <stdint.h>
 #include "src/serializer.h"
+#include <cstring>
 
 using namespace std;
 

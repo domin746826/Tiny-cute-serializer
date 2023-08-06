@@ -1,6 +1,11 @@
 #include "serializer.h"
-#include <iostream>
-using namespace std;
+
+#ifdef __AVR__
+#include <string.h>
+#else
+#include <cstring>
+#endif
+
 
 Serializer::Serializer()
 {
@@ -67,13 +72,14 @@ void Serializer::processEvents()
   while(isDataAvailable())
   {
     char c = receiveChar();
-    if(c == sendTrigger) //clear everything
+    if(c == receiveTrigger) //clear everything
     {
       currentlyReceivedPacketId = 0;
       receivingHigher = true;
       lastReceivedChar = c;
       receivedPacketPos = 0;
       isReceivingPacket = false;
+      receivedPacketSize = 0;
       return;
     }
     if(!isReceivingPacket) //TODO check if ID equals 0 and dump packet in that case
@@ -98,6 +104,11 @@ void Serializer::processEvents()
           receivingHigher = true;
           receivedPacketSize = hexToNum(lastReceivedChar) << 4 | hexToNum(c);
           isReceivingPacket = true;
+          
+          for(uint8_t i = 0; i < currentEventsIndex; i++) //find matching packet
+            if(events[i]->type == currentlyReceivedPacketId)
+              if(receivedPacketSize > events[i]->length)
+                receivedPacketSize = events[i]->length;
         } 
       }
       lastReceivedChar = c;

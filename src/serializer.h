@@ -13,7 +13,7 @@
 
 #ifndef _SERIALIZER_H
 #define _SERIALIZER_H
-#include <cstring>
+//#include <cstring>
 #include <stdint.h>
 
 #define BUFFER_LENGTH 64 //max packet size, consider decreasing it on small devices like ATTiny
